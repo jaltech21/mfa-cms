@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Card from '../components/ui/Card'
 import Input from '../components/ui/Input'
 import Button from '../components/ui/Button'
+import api from '../lib/api'
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('')
@@ -25,9 +26,8 @@ export default function ForgotPassword() {
     }
 
     try {
-      // Placeholder for forgot password endpoint
-      // Will be wired to backend API when implemented
-      setMessage('If the email exists, a password reset link will be sent.')
+      const res = await api.post('/auth/forgot-password', { email })
+      setMessage(res.data.message)
       setTimeout(() => navigate('/login'), 2000)
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Failed to process request')

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Boolean, Date, Enum, ForeignKey, Integer
+from sqlalchemy import Column, String, Boolean, Date, Enum, ForeignKey, Integer, DateTime
 from sqlalchemy.orm import relationship
 from app.models.base import BaseModel
 import enum
@@ -32,6 +32,9 @@ class Client(BaseModel):
     
     is_active = Column(Boolean, default=True)
     is_verified = Column(Boolean, default=False)
+    
+    reset_token = Column(String, nullable=True)
+    reset_token_expires = Column(DateTime, nullable=True)
     
     submission_lead_id = Column(Integer, ForeignKey("submission_leads.id"))
     submission_lead = relationship("SubmissionLead")

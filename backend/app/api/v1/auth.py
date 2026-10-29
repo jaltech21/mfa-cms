@@ -1,4 +1,5 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
+from uuid import uuid4
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -58,3 +59,45 @@ def login(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = 
 @router.get("/me", response_model=UserResponse)
 def read_users_me(current_user: Client = Depends(get_current_active_user)):
     return current_user
+
+
+@router.post("/forgot-password")
+def forgot_password(request: dict, db: Session = Depends(get_db)):
+    email = request.get("email")
+    if not email:
+        raise HTTPException(status_code=400, detail="Email is required")
+    
+    user = db.query(Client).filter(Client.email == email).first()
+    if not user or not user.is_active:
+        # Always return success to avoid email enumeration
+        return {"message": "If the email exists, a password reset link has been sent."}
+    
+    reset_token = str(uuid4())
+    user.reset_token = reset_token
+    user.reset_token_expires = datetime.utcnow() + timedelta(hours=1)
+    db.commit()
+    db.refresh(user)
+    
+    # In production: send email with reset link containing token
+    # For now, log token (would be sent via email service)
+    return {"message": "If the email exists, a password reset link has been sent."}
+
+
+@router.post("/reset-password")
+def reset_password(request: dict, db: Session = Depends(get_db)):
+    token = request.get("token")
+    new_password = request.get("new_password")
+    
+    if not token or not new_password:
+        raise HTTPException(status_code=400, detail="Token and new password are required")
+    
+    user = db.query(Client).filter(Client.reset_token == token).first()
+    if not user or not user.reset_token_expires or user.reset_token_expires < datetime.utcnow():
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+    
+    user.password_hash = security.get_password_hash(new_password)
+    user.reset_token = None
+    user.reset_token_expires = None
+    db.commit()
+    
+    return {"message": "Password has been reset successfully."}
