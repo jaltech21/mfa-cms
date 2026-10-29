@@ -103,11 +103,6 @@ export default function Login() {
               Forgot Password?
             </button>
           </div>
-          <div style={{ marginTop: '1.5rem', padding: '0.75rem', background: '#f8f9fa', borderRadius: '4px', fontSize: '0.875rem' }}>
-            <strong>Demo Credentials:</strong><br />
-            Admin: admin@mfa.com / admin123<br />
-            Client: client2@test.com / pass123
-          </div>
         </Card>
       </div>
     </div>
