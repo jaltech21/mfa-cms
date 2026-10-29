@@ -4,6 +4,7 @@ import Card from '../../components/ui/Card'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
 import api from '../../lib/api'
+import { useToast } from '../../components/ui/Toast'
 
 export default function CatalogManager() {
   const [catalog, setCatalog] = useState<any[]>([])
@@ -11,6 +12,7 @@ export default function CatalogManager() {
   const [editingId, setEditingId] = useState<number | null>(null)
   const [form, setForm] = useState({ program_type: 'marriage', name: '', description: '', standard_price: '', requirements: '', is_active: true })
   const navigate = useNavigate()
+  const { showToast } = useToast()
 
   useEffect(() => {
     loadCatalog()
@@ -39,14 +41,20 @@ export default function CatalogManager() {
     setShowForm(true)
   }
 
+  const closeForm = () => {
+    setShowForm(false)
+    setEditingId(null)
+    setForm({ program_type: 'marriage', name: '', description: '', standard_price: '', requirements: '', is_active: true })
+  }
+
   const handleCreate = async () => {
     try {
       await api.post('/admin/catalog', {...form, standard_price: parseFloat(form.standard_price)})
-      alert('Catalog item created')
-      startCreate()
+      closeForm()
+      showToast('success', 'Catalog item created successfully')
       loadCatalog()
-    } catch (err) {
-      alert('Failed to create')
+    } catch (err: any) {
+      showToast('error', err.response?.data?.detail || 'Failed to create catalog item')
     }
   }
 
@@ -58,11 +66,11 @@ export default function CatalogManager() {
         standard_price: parseFloat(form.standard_price),
         is_active: form.is_active,
       })
-      alert('Catalog item updated')
-      startCreate()
+      closeForm()
+      showToast('success', 'Catalog item updated successfully')
       loadCatalog()
-    } catch (err) {
-      alert('Failed to update')
+    } catch (err: any) {
+      showToast('error', err.response?.data?.detail || 'Failed to update catalog item')
     }
   }
 
@@ -70,10 +78,10 @@ export default function CatalogManager() {
     if (!confirm('Are you sure you want to delete this catalog item?')) return
     try {
       await api.delete(`/admin/catalog/${id}`)
-      alert('Catalog item deleted')
+      showToast('success', 'Catalog item deleted successfully')
       loadCatalog()
-    } catch (err) {
-      alert('Failed to delete')
+    } catch (err: any) {
+      showToast('error', err.response?.data?.detail || 'Failed to delete catalog item')
     }
   }
 
@@ -99,7 +107,7 @@ export default function CatalogManager() {
         ) : (
           <Button onClick={handleCreate}>Create</Button>
         )}
-        <Button variant="secondary" onClick={() => setShowForm(false)}>Cancel</Button>
+        <Button variant="secondary" onClick={() => closeForm()}>Cancel</Button>
       </div>
     </Card>
   )
