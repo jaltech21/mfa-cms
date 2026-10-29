@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard'
 import ClientPortal from './pages/ClientPortal'
 import AdminPortal from './pages/AdminPortal'
 import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
       <Route path="/login/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/client/*" element={<ClientPortal />} />
       <Route path="/admin/*" element={<AdminPortal />} />
