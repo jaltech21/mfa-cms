@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import Header from '../components/layout/Header'
 import AdminDashboard from '../features/admin/AdminDashboard'
 import CatalogManager from '../features/admin/CatalogManager'

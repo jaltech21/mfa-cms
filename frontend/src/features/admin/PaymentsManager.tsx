@@ -1,20 +1,16 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import Card from '../../components/ui/Card'
 import Button from '../../components/ui/Button'
 import api from '../../lib/api'
 
 export default function PaymentsManager() {
-  const [payments, setPayments] = useState<any[]>([])
   const [apps, setApps] = useState<any[]>([])
-  const navigate = useNavigate()
 
   useEffect(() => {
     loadData()
   }, [])
 
   const loadData = () => {
-    api.get('/admin/payments').then(res => setPayments(res.data)).catch(console.error)
     api.get('/admin/applications').then(res => setApps(res.data)).catch(console.error)
   }
 
@@ -30,9 +26,9 @@ export default function PaymentsManager() {
 
   return (
     <div>
-      <Button variant="secondary" onClick={() => navigate('/admin')} style={{ marginBottom: '1rem' }}>← Back to Dashboard</Button>
+      <Button variant="secondary" onClick={() => window.history.back()} style={{ marginBottom: '1rem' }}>← Back</Button>
       <h1 style={{ marginBottom: '2rem' }}>Financial Ledger & Program Initiation</h1>
-      
+
       <h2 style={{ marginBottom: '1rem' }}>Programs Pending Initiation</h2>
       <div style={{ display: 'grid', gap: '1rem', marginBottom: '2rem' }}>
         {apps.filter(a => a.status === 'pending_initiation' && !a.is_initiated).map((app) => (
