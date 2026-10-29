@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.core import security
@@ -9,10 +10,16 @@ from app.core.config import settings
 from app.db.session import get_db
 from app.models.client import Client, UserRole
 from app.schemas.auth import Token, UserRegister, UserResponse
-from app.api.deps.auth import get_current_active_user
+from app.api.deps.auth import get_current_active_user, get_current_user
 from app.services.email import send_password_reset_email
 
 router = APIRouter()
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+    confirm_password: str
 
 
 @router.post("/register", response_model=UserResponse)
@@ -83,8 +90,27 @@ def forgot_password(request: dict, db: Session = Depends(get_db)):
     if not sent:
         # Email not configured - log token for development
         print(f"Password reset token for {user.email}: {reset_token}")
-    
+
     return {"message": "If the email exists, a password reset link has been sent."}
+
+
+@router.post("/change-password")
+def change_password(
+    request: ChangePasswordRequest,
+    db: Session = Depends(get_db),
+    current_user: Client = Depends(get_current_active_user),
+):
+    if not security.verify_password(request.current_password, current_user.password_hash):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect current password")
+
+    if request.new_password != request.confirm_password:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="New passwords do not match")
+
+    current_user.password_hash = security.get_password_hash(request.new_password)
+    db.commit()
+    db.refresh(current_user)
+
+    return {"message": "Password changed successfully."}
 
 
 @router.post("/reset-password")
