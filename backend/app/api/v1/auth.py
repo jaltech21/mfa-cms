@@ -10,6 +10,7 @@ from app.db.session import get_db
 from app.models.client import Client, UserRole
 from app.schemas.auth import Token, UserRegister, UserResponse
 from app.api.deps.auth import get_current_active_user
+from app.services.email import send_password_reset_email
 
 router = APIRouter()
 
@@ -78,8 +79,11 @@ def forgot_password(request: dict, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
     
-    # In production: send email with reset link containing token
-    # For now, log token (would be sent via email service)
+    sent = send_password_reset_email(user.email, reset_token)
+    if not sent:
+        # Email not configured - log token for development
+        print(f"Password reset token for {user.email}: {reset_token}")
+    
     return {"message": "If the email exists, a password reset link has been sent."}
 
 

@@ -17,6 +17,13 @@ class Settings(BaseSettings):
     TREXO_API_KEY: str = ""
     TREXO_WEBHOOK_SECRET: str = ""
     
+    SMTP_HOST: str = "localhost"
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM: str = "noreply@mfa.com"
+    SMTP_USE_TLS: bool = True
+    
     CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:5173"]
     IP_HEADER: str = "X-Forwarded-For"
     
