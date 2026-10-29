@@ -45,7 +45,11 @@ export default function Login() {
       formData.append('password', password)
       const res = await api.post('/auth/login', formData)
       localStorage.setItem('token', res.data.access_token)
-      navigate('/dashboard')
+      if (res.data?.role === 'client') {
+        navigate('/client')
+      } else {
+        navigate('/admin')
+      }
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Invalid email or password')
     } finally {
