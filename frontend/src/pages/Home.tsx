@@ -1,142 +1,449 @@
+import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Card from '../components/ui/Card'
-import Button from '../components/ui/Button'
+import {
+  ShieldCheck,
+  Users,
+  Briefcase,
+  Globe,
+  ArrowRight,
+  Search,
+  X,
+  CheckCircle2,
+  Clock,
+  HeartHandshake,
+  MessageSquare,
+  Sparkles,
+  ClipboardList,
+  Wallet,
+  Radar,
+  MapPin,
+  Phone,
+} from 'lucide-react'
 
-const features = [
+const NAV_LINKS = ['Services', 'Process', 'Track Application', 'Pricing Catalog', 'About Us']
+
+const services = [
   {
-    title: 'Guided Intakes',
-    description: 'Structured multi-step application intake that captures personal, travel, and contact details with ease.',
+    id: 'marriage',
+    title: 'Marriage & Family Sponsorship',
+    icon: HeartHandshake,
+    price: 1850,
+    duration: '6-9 months',
+    includes: ['Marriage Certificate', 'Birth Certificate', 'Order of Mission verification'],
+    description: 'Family reunification and spouse sponsorship programs with full documentation support.',
   },
   {
-    title: 'Program Catalog',
-    description: 'Transparent pricing and requirements for every migration program, managed in one place.',
+    id: 'business',
+    title: 'Business & Corporate Mobility',
+    icon: Briefcase,
+    price: 2400,
+    duration: '4-7 months',
+    includes: ['Business Certificate', 'TIN', 'NRA Tax clearance'],
+    description: 'Corporate relocation and skilled business mobility arrangements.',
   },
   {
-    title: 'Document Tracking',
-    description: 'Real-time tracking of applications, consents, and program status from submission to completion.',
+    id: 'envoy',
+    title: 'Ministry & Parliamentary Envoy',
+    icon: Globe,
+    price: 3200,
+    duration: '5-8 months',
+    includes: ['Official Delegation tracking', 'Position mapping'],
+    description: 'Official diplomatic and parliamentary envoy missions with government coordination.',
   },
   {
-    title: 'Secure Payments',
-    description: 'Managed payment initiation and cohort-based casework workflows built for accountability.',
+    id: 'medical',
+    title: 'Medical Referral & Treatment Travel',
+    icon: ClipboardList,
+    price: 4500,
+    duration: '3-6 months',
+    includes: ['Medical referral processing', 'Treatment travel coordination'],
+    description: 'Medical evacuation and treatment travel coordination worldwide.',
   },
 ]
 
-function FeatureIcon({ index }: { index: number }) {
-  const icons = [
-    <path key="i" d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />,
-    <rect key="r" x="8" y="2" width="8" height="4" rx="1" />,
-    <path key="l1" d="M3 12h18" />,
-    <path key="l2" d="M3 18h18" />,
-    <path key="l3" d="M9 6h.01" />,
-    <path key="l4" d="M9 12h.01" />,
-    <path key="l5" d="M9 18h.01" />,
-  ]
-  const files = [
-    <path key="f1" d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />,
-    <path key="f2" d="M14 2v4a2 2 0 0 0 2 2h4" />,
-  ]
-  const lock = [<rect key="r" x="3" y="11" width="18" height="11" rx="2" />, <path key="p" d="M7 11V7a5 5 0 0 1 10 0v4" />]
-  const iconsArray = [icons, files, lock]
-  const paths = iconsArray[index % iconsArray.length]
-  return (
-    <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #eef2ff, #f5f3ff)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        {paths}
-      </svg>
-    </div>
-  )
-}
+const steps = [
+  {
+    icon: ClipboardList,
+    title: 'Submit Application & Proposed Budget',
+    description: 'Online form with passport verification and proposed budget submission.',
+  },
+  {
+    icon: Users,
+    title: 'Office Review & Lead Assignment',
+    description: 'Official MP/Permanent Secretary endorsement and submission lead assignment.',
+  },
+  {
+    icon: Wallet,
+    title: 'In-Person Office Visit & Fee Settlement',
+    description: 'In-person settlement unlocks active tracking for the client.',
+  },
+  {
+    icon: Radar,
+    title: 'Real-Time Gated Progress Tracking',
+    description: 'Color-coded document checklists with Trexo AI WhatsApp alerts.',
+  },
+]
 
 export default function Home() {
   const navigate = useNavigate()
+  const [passportQuery, setPassportQuery] = useState('')
+  const [statusResult, setStatusResult] = useState(false)
+  const [showIntake, setShowIntake] = useState(false)
+  const [selectedProgram, setSelectedProgram] = useState('marriage')
+  const [fullName, setFullName] = useState('')
+  const [intakePassport, setIntakePassport] = useState('')
+  const [price, setPrice] = useState('')
+  const [initiationDate, setInitiationDate] = useState('')
+  const [completionDate, setCompletionDate] = useState('')
+  const [tcAccepted, setTcAccepted] = useState(false)
+  const [signature, setSignature] = useState('')
+  const [intakeSubmitted, setIntakeSubmitted] = useState(false)
 
-  const ctaButtonStyle: any = { background: 'white', color: '#1e40af', padding: '0.875rem 2rem', borderRadius: '10px', fontSize: '1rem', fontWeight: 700, border: 'none', cursor: 'pointer', boxShadow: '0 8px 20px rgba(0,0,0,0.25)' }
+  const scrollToSection = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
-  const secondaryButtonStyle: any = { background: 'rgba(255,255,255,0.12)', color: 'white', padding: '0.875rem 2rem', borderRadius: '10px', fontSize: '1rem', fontWeight: 600, border: '1px solid rgba(255,255,255,0.35)', cursor: 'pointer', backdropFilter: 'blur(6px)' }
+  const handleStatusSearch = (e: FormEvent) => {
+    e.preventDefault()
+    if (passportQuery.trim().length >= 4) {
+      setStatusResult(true)
+    }
+  }
 
-  const sectionTitleStyle: any = { fontSize: '2rem', fontWeight: 800, color: 'white', textAlign: 'center', marginBottom: '0.5rem' }
+  const openIntake = (programId: string) => {
+    setSelectedProgram(programId)
+    setShowIntake(true)
+  }
 
-  const sectionSubtitleStyle: any = { color: 'rgba(255,255,255,0.75)', textAlign: 'center', marginBottom: '2.5rem', fontSize: '1rem' }
+  const closeIntake = () => {
+    setShowIntake(false)
+    setIntakeSubmitted(false)
+  }
+
+  const handleIntakeSubmit = () => {
+    if (tcAccepted && signature.trim().length > 1) {
+      setIntakeSubmitted(true)
+    }
+  }
+
+  const navLinkClick = (link: string) => {
+    if (link === 'Pricing Catalog') {
+      scrollToSection('services')
+    } else if (link === 'Track Application') {
+      scrollToSection('tracking')
+    } else if (link === 'About Us') {
+      scrollToSection('about')
+    } else {
+      scrollToSection(link.toLowerCase().replace(/\s+/g, '-'))
+    }
+  }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #7c3aed 100%)', padding: '4rem 1rem 5rem', position: 'relative', overflow: 'hidden' }}>
-      {/* decorative glows */}
-      <div style={{ position: 'absolute', top: '-200px', right: '-200px', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(124,58,237,0.5), transparent 70%)', pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', bottom: '-250px', left: '-250px', width: '550px', height: '550px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.45), transparent 70%)', pointerEvents: 'none' }} />
-
-      <div style={{ maxWidth: '1100px', margin: '0 auto', position: 'relative' }}>
-        {/* Hero */}
-        <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-          <div style={{ display: 'inline-block', padding: '0.4rem 1rem', borderRadius: '999px', background: 'rgba(255,255,255,0.14)', border: '1px solid rgba(255,255,255,0.3)', color: 'white', fontSize: '0.8rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
-            Client &amp; Casework Management
-          </div>
-          <h1 style={{ fontSize: '3.5rem', fontWeight: 800, color: 'white', marginBottom: '1rem', lineHeight: 1.12, textShadow: '0 10px 40px rgba(0,0,0,0.35)' }}>Migration For All</h1>
-          <p style={{ color: 'rgba(255,255,255,0.88)', fontSize: '1.3rem', maxWidth: '680px', margin: '0 auto 2rem', lineHeight: 1.6 }}>
-            Secure, guided migration and casework support for individuals and families — from first intake to final journey.
-          </p>
-          <p style={{ color: 'rgba(255,255,255,0.7)', maxWidth: '620px', margin: '0 auto 2.5rem', lineHeight: 1.7, fontSize: '0.98rem' }}>
-            MFA brings structure and clarity to complex migration cases through professional intake, transparent program
-            catalogs, document tracking, consent management, and secure payment workflows.
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Button onClick={() => navigate('/client')} style={ctaButtonStyle}>Start Your Migration</Button>
-            <Button onClick={() => navigate('/login')} style={secondaryButtonStyle}>Sign In</Button>
+    <div className="min-h-screen bg-[#0F172A] text-white">
+      <header className="sticky top-0 z-50 bg-[#0F172A]/70 backdrop-blur-xl border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+          <button onClick={() => scrollToSection('top')} className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#059669] to-[#10B981] flex items-center justify-center text-white font-bold text-lg">M</div>
+            <span className="text-white font-bold text-lg tracking-tight">Migration For All</span>
+          </button>
+          <nav className="hidden lg:flex items-center gap-8">
+            {NAV_LINKS.map((link) => (
+              <button key={link} onClick={() => navLinkClick(link)} className="text-sm text-slate-300 hover:text-white transition-colors font-medium">
+                {link}
+              </button>
+            ))}
+          </nav>
+          <div className="flex items-center gap-3">
+            <button onClick={() => navigate('/login')} className="hidden sm:inline-flex items-center justify-center rounded-full border border-white/30 px-5 py-2 text-sm font-semibold text-white hover:bg-white/10 transition-colors">
+              Client Portal Login
+            </button>
+            <button onClick={() => navigate('/client')} className="inline-flex items-center justify-center rounded-full bg-[#059669] hover:bg-[#047857] px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-[#059669]/40 transition-colors">
+              Apply Online
+            </button>
           </div>
         </div>
+      </header>
 
-        {/* About / Mission */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem', marginBottom: '3.5rem' }}>
-          <Card title="Who We Are" style={{ background: 'rgba(255,255,255,0.97)', borderRadius: '18px', padding: '2rem', boxShadow: '0 24px 60px rgba(0,0,0,0.3)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem', marginBottom: '1.25rem' }}>
-              <div style={{ width: '46px', height: '46px', borderRadius: '12px', background: 'linear-gradient(135deg, #1e40af, #7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 800, fontSize: '1.2rem' }}>MFA</div>
-              <div>
-                <h3 style={{ margin: 0, color: '#111827', fontSize: '1.25rem', fontWeight: 700 }}>Migration For All</h3>
-                <p style={{ margin: 0, color: '#6b7280', fontSize: '0.85rem' }}>Client &amp; Casework Management</p>
+      <section id="top" className="relative overflow-hidden bg-[#0F172A]">
+        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-[#059669]/20 blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-[#1e3a8a]/60 blur-3xl" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20 sm:pt-32 sm:pb-28">
+          <div className="mx-auto max-w-4xl text-center">
+            <span className="inline-flex items-center rounded-full bg-[#059669]/15 px-4 py-1.5 text-sm font-semibold text-[#34D399] border border-[#059669]/30">
+              <Sparkles className="w-4 h-4 mr-2" />
+              Enterprise Immigration &amp; Visa Processing
+            </span>
+            <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
+              Streamlined Global Mobility &amp; Visa Solutions
+            </h1>
+            <p className="mt-6 text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+              Transparent, trackable submissions and secure client self-service — powered by expert caseworkers and AI-assisted updates via WhatsApp.
+            </p>
+            <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <button onClick={() => navigate('/client')} className="inline-flex items-center justify-center gap-2 rounded-full bg-[#059669] hover:bg-[#047857] px-8 py-3.5 text-white font-semibold shadow-lg shadow-[#059669]/40 transition-all">
+                Start Application <ArrowRight className="w-5 h-5" />
+              </button>
+              <button onClick={() => scrollToSection('tracking')} className="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 px-8 py-3.5 text-white font-semibold hover:bg-white/10 transition-all">
+                Track Your Status
+              </button>
+            </div>
+
+            <form onSubmit={handleStatusSearch} className="mt-14 max-w-2xl mx-auto">
+              <div className="flex items-center rounded-2xl bg-white/10 backdrop-blur-xl border border-white/15 p-2 shadow-2xl">
+                <div className="flex-1 flex items-center gap-3 px-4">
+                  <Search className="w-5 h-5 text-slate-400 shrink-0" />
+                  <input
+                    value={passportQuery}
+                    onChange={(e) => setPassportQuery(e.target.value)}
+                    placeholder="Enter Passport Number"
+                    className="w-full bg-transparent text-white placeholder-slate-400 outline-none text-sm"
+                  />
+                </div>
+                <button type="submit" className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-[#059669] hover:bg-[#047857] px-6 py-3 text-white font-semibold transition-colors">
+                  <Search className="w-4 h-4" /> Track
+                </button>
+              </div>
+            </form>
+            {statusResult && (
+              <div className="mt-6 max-w-2xl mx-auto rounded-2xl bg-white/10 backdrop-blur-xl border border-white/15 p-6 text-left">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-slate-300">Passport</p>
+                  <p className="font-mono font-semibold text-white">{passportQuery.toUpperCase()}</p>
+                </div>
+                <div className="mt-4 flex items-center gap-2">
+                  <span className="inline-flex items-center rounded-full bg-[#059669]/20 px-3 py-1 text-xs font-semibold text-[#34D399] border border-[#059669]/40">
+                    <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" /> Certified &amp; Paid
+                  </span>
+                </div>
+                <p className="mt-3 text-sm text-slate-400">Assigned Submission Lead: Hon. Parliamentary Lead</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section id="services" className="py-20 bg-[#F8FAFC]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto">
+            <span className="inline-flex items-center rounded-full bg-[#059669]/10 px-4 py-1.5 text-sm font-semibold text-[#059669] border border-[#059669]/30">Our Services</span>
+            <h2 className="mt-4 text-3xl sm:text-4xl font-bold text-[#0F172A] tracking-tight">Visa Processing Services Catalog</h2>
+            <p className="mt-4 text-slate-600">Four core offerings with baseline pricing, duration estimates, and key requirements.</p>
+          </div>
+          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {services.map((service) => {
+              const ServiceIcon = service.icon
+              return (
+                <div key={service.id} className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-xl transition-all flex flex-col">
+                  <div className="w-12 h-12 rounded-xl bg-[#059669]/10 flex items-center justify-center text-[#059669] mb-4">
+                    <ServiceIcon className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-bold text-[#0F172A]">{service.title}</h3>
+                  <p className="mt-2 text-sm text-slate-600 flex-1">{service.description}</p>
+                  <div className="mt-4 text-sm font-semibold text-[#0F172A]">From {service.price} USD <span className="text-slate-500 font-normal">• {service.duration}</span></div>
+                  <ul className="mt-4 space-y-1.5">
+                    {service.includes.map((item) => (
+                      <li key={item} className="flex items-start text-sm text-slate-600">
+                        <CheckCircle2 className="w-4 h-4 text-[#059669] mr-2 mt-0.5 shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <button onClick={() => openIntake(service.id)} className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-[#059669] hover:bg-[#047857] px-4 py-2.5 text-sm font-semibold text-white transition-colors">
+                    Select &amp; Apply <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section id="process" className="py-20 bg-[#0F172A] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">How It Works</h2>
+            <p className="mt-4 text-slate-400">A transparent, four-step journey from submission to settlement.</p>
+          </div>
+          <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {steps.map((step, index) => {
+              const StepIcon = step.icon
+              return (
+                <div key={step.title} className="relative rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-sm">
+                  <div className="w-12 h-12 rounded-full bg-[#059669]/20 border border-[#059669]/40 flex items-center justify-center text-[#34D399] mb-4">
+                    <StepIcon className="w-6 h-6" />
+                  </div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-[#34D399]">Step {index + 1}</p>
+                  <h3 className="mt-2 text-lg font-semibold text-white">{step.title}</h3>
+                  <p className="mt-2 text-sm text-slate-400">{step.description}</p>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section id="tracking" className="py-20 bg-[#0F172A] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-5 gap-8 items-center">
+            <div className="lg:col-span-3">
+              <span className="inline-flex items-center rounded-full bg-[#059669]/15 px-4 py-1.5 text-sm font-semibold text-[#34D399] border border-[#059669]/30">Live Preview</span>
+              <h2 className="mt-4 text-3xl sm:text-4xl font-bold tracking-tight">Real-Time Gated Progress Tracking</h2>
+              <p className="mt-4 text-slate-400 leading-relaxed">Authenticated clients see color-coded document readiness, assigned leads, and delegation groups in real time.</p>
+            </div>
+            <div className="lg:col-span-2">
+              <div className="rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 p-6">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-slate-400">Assigned Submission Lead</p>
+                  <span className="inline-flex items-center rounded-full bg-[#059669]/20 px-3 py-1 text-xs font-semibold text-[#34D399] border border-[#059669]/40">
+                    <ShieldCheck className="w-3.5 h-3.5 mr-1.5" /> Hon. Parliamentary Lead
+                  </span>
+                </div>
+                <div className="mt-5 space-y-2">
+                  <div className="flex items-center justify-between rounded-xl bg-white/5 border border-white/10 px-4 py-3">
+                    <span className="text-sm text-slate-300">Status</span>
+                    <span className="inline-flex items-center rounded-full bg-[#F59E0B]/20 px-3 py-1 text-xs font-semibold text-[#FBBF24] border border-[#F59E0B]/40">
+                      <Clock className="w-3.5 h-3.5 mr-1.5" /> Pending
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-xl bg-white/5 border border-white/10 px-4 py-3">
+                    <span className="text-sm text-slate-300">Co-Clients / Delegation</span>
+                    <span className="text-sm text-white font-medium">2 members</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <p style={{ color: '#4b5563', lineHeight: 1.75, fontSize: '0.95rem' }}>
-              We are a purpose-built platform helping people and families navigate migration journeys with confidence.
-              Every case is supported by structured processes, professional oversight, and compassionate guidance.
-            </p>
-          </Card>
-          <Card title="Our Mission" style={{ background: 'rgba(255,255,255,0.97)', borderRadius: '18px', padding: '2rem', boxShadow: '0 24px 60px rgba(0,0,0,0.3)' }}>
-            <div style={{ width: '46px', height: '46px', borderRadius: '12px', background: 'linear-gradient(135deg, #059669, #10b981)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '1.4rem', marginBottom: '1.25rem' }}>🎯</div>
-            <h3 style={{ margin: '0 0 0.75rem', color: '#111827', fontSize: '1.25rem', fontWeight: 700 }}>Our Mission</h3>
-            <p style={{ color: '#4b5563', lineHeight: 1.75, fontSize: '0.95rem' }}>
-              To make migration support simple, organized, and human. We combine professional casework with modern
-              technology so every client can move forward with clarity and confidence.
-            </p>
-          </Card>
-        </div>
-
-        {/* Features */}
-        <div style={{ marginBottom: '3.5rem' }}>
-          <h2 style={sectionTitleStyle}>Comprehensive Support</h2>
-          <p style={sectionSubtitleStyle}>Everything you need to manage migration cases with care and precision.</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
-            {features.map((feature, index) => (
-              <Card key={feature.title}>
-                <FeatureIcon index={index} />
-                <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem', fontWeight: 700, color: '#1f2937' }}>{feature.title}</h3>
-                <p style={{ margin: 0, color: '#6b7280', fontSize: '0.9rem', lineHeight: 1.65 }}>{feature.description}</p>
-              </Card>
-            ))}
           </div>
         </div>
+      </section>
 
-        {/* CTA */}
-        <div style={{ background: 'linear-gradient(135deg, rgba(30,64,175,0.95), rgba(124,58,237,0.95))', borderRadius: '20px', padding: '3rem 2rem', textAlign: 'center', boxShadow: '0 24px 60px rgba(0,0,0,0.35)', border: '1px solid rgba(255,255,255,0.2)' }}>
-          <h2 style={{ color: 'white', fontSize: '2rem', fontWeight: 800, marginBottom: '0.75rem' }}>Begin Your Journey Today</h2>
-          <p style={{ color: 'rgba(255,255,255,0.85)', marginBottom: '2rem', maxWidth: '560px', marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.7 }}>
-            Create your client account or sign in to access guided intake, program catalog, and case tracking.
-          </p>
-          <Button onClick={() => navigate('/client')} style={ctaButtonStyle}>Get Started</Button>
+      <section className="py-20 bg-[#0F172A]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl bg-gradient-to-br from-[#052e16] to-[#064e3b] border border-[#059669]/30 p-8 sm:p-12 text-center">
+            <div className="w-14 h-14 mx-auto rounded-2xl bg-[#059669]/20 flex items-center justify-center text-[#34D399] mb-6">
+              <MessageSquare className="w-7 h-7" />
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white">Trexo AI WhatsApp Integration</h2>
+            <p className="mt-4 text-slate-300 max-w-2xl mx-auto leading-relaxed">
+              Automated 24/7 status updates, document reminders, and policy guidance delivered directly via WhatsApp powered by Trexo AI.
+            </p>
+            <button className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#059669] hover:bg-[#047857] px-6 py-3 text-white font-semibold">
+              <MessageSquare className="w-4 h-4" /> Chat on WhatsApp
+            </button>
+          </div>
         </div>
+      </section>
 
-        <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.65)', fontSize: '0.8rem', marginTop: '2rem' }}>
-          © 2026 Migration For All (MFA). All rights reserved.
-        </p>
-      </div>
+      <section className="py-20 bg-[#F8FAFC] text-center">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A] tracking-tight">Begin Your Global Mobility Journey</h2>
+          <p className="mt-4 text-slate-600 max-w-2xl mx-auto">Transparent tracking, expert casework, and AI-assisted communication — all in one place.</p>
+          <button onClick={() => navigate('/client')} className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#059669] hover:bg-[#047857] px-8 py-3.5 text-white font-semibold shadow-lg shadow-[#059669]/40">
+            Apply Online <ArrowRight className="w-5 h-5" />
+          </button>
+        </div>
+      </section>
+
+      <footer className="bg-[#0B1120] border-t border-white/10 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid gap-8 md:grid-cols-3">
+          <div>
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#059669] to-[#10B981] flex items-center justify-center text-white font-bold text-lg">M</div>
+              <span className="text-white font-bold text-lg">Migration For All</span>
+            </div>
+            <p className="mt-4 text-slate-400 text-sm leading-relaxed">Enterprise immigration, visa processing, and travel support management.</p>
+          </div>
+          <div>
+            <h4 className="text-white font-semibold mb-4">Quick Links</h4>
+            <ul className="space-y-2 text-sm">
+              <li><button onClick={() => scrollToSection('services')} className="text-slate-400 hover:text-white">Services</button></li>
+              <li><button onClick={() => scrollToSection('process')} className="text-slate-400 hover:text-white">Process</button></li>
+              <li><button onClick={() => scrollToSection('tracking')} className="text-slate-400 hover:text-white">Track Application</button></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-white font-semibold mb-4">Contact</h4>
+            <ul className="space-y-2 text-sm">
+              <li className="flex items-center text-slate-400"><MapPin className="w-4 h-4 mr-2 text-[#059669]" /> Freetown, Sierra Leone</li>
+              <li className="flex items-center text-slate-400"><Phone className="w-4 h-4 mr-2 text-[#059669]" /> +232 20 000 0000</li>
+            </ul>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-slate-500 text-sm">© 2026 Migration For All (MFA). All rights reserved.</p>
+          <div className="flex items-center gap-6 text-sm">
+            <button className="text-slate-400 hover:text-white">Privacy Policy</button>
+            <button className="text-slate-400 hover:text-white">Terms of Service</button>
+          </div>
+        </div>
+      </footer>
+
+      {showIntake && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={closeIntake}>
+          <div className="bg-white rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 sm:p-8" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-[#0F172A]">Client Intake — Step 1</h3>
+              <button onClick={closeIntake} className="p-2 rounded-full hover:bg-slate-100">
+                <X className="w-5 h-5 text-slate-600" />
+              </button>
+            </div>
+            {intakeSubmitted ? (
+              <div className="text-center py-10">
+                <CheckCircle2 className="w-14 h-14 mx-auto text-[#059669] mb-4" />
+                <h4 className="text-xl font-bold text-[#0F172A]">Application Submitted</h4>
+                <p className="mt-2 text-slate-600">Your intake has been received. Our team will review and assign a submission lead.</p>
+                <button onClick={closeIntake} className="mt-6 rounded-full bg-[#059669] hover:bg-[#047857] px-6 py-2.5 text-white font-semibold">Close</button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-[#0F172A] mb-1">Full Name</label>
+                  <input value={fullName} onChange={(e) => setFullName(e.target.value)} className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/30" placeholder="Full legal name" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-[#0F172A] mb-1">Passport Number</label>
+                  <input value={intakePassport} onChange={(e) => setIntakePassport(e.target.value)} className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/30" placeholder="e.g. A1234567" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-[#0F172A] mb-1">Program Selection</label>
+                  <select value={selectedProgram} onChange={(e) => setSelectedProgram(e.target.value)} className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/30 bg-white">
+                    {services.map((s) => (
+                      <option key={s.id} value={s.id}>{s.title}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-[#0F172A] mb-1">Proposed Price (USD)</label>
+                  <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/30" placeholder="1850" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-[#0F172A] mb-1">Initiation Date</label>
+                    <input type="date" value={initiationDate} onChange={(e) => setInitiationDate(e.target.value)} className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/30" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-[#0F172A] mb-1">Completion Date</label>
+                    <input type="date" value={completionDate} onChange={(e) => setCompletionDate(e.target.value)} className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/30" />
+                  </div>
+                </div>
+                <label className="flex items-start gap-3 rounded-xl border border-slate-200 bg-[#F8FAFC] p-4">
+                  <input type="checkbox" checked={tcAccepted} onChange={(e) => setTcAccepted(e.target.checked)} className="mt-1 w-4 h-4 accent-[#059669]" />
+                  <span className="text-sm text-slate-700">I accept the Terms &amp; Conditions and authorize the digital signature below.</span>
+                </label>
+                <div>
+                  <label className="block text-sm font-semibold text-[#0F172A] mb-1">Digital Signature</label>
+                  <input value={signature} onChange={(e) => setSignature(e.target.value)} className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/30" placeholder="Sign your full name" />
+                </div>
+                <button
+                  onClick={handleIntakeSubmit}
+                  className="w-full rounded-full bg-[#059669] hover:bg-[#047857] py-3 text-white font-semibold transition-colors disabled:opacity-50"
+                >
+                  Submit Intake
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
