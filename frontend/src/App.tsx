@@ -8,7 +8,7 @@ import ResetPassword from './pages/ResetPassword'
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="/" element={<Navigate to="/client" replace />} />
       <Route path="/login" element={<Login />} />
       <Route path="/login/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
