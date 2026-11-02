@@ -4,12 +4,14 @@ import Card from '../../components/ui/Card'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
 import api from '../../lib/api'
+import { useToast } from '../../components/ui/Toast'
 
 export default function ConsentSign() {
   const [terms, setTerms] = useState<any>(null)
   const [agreed, setAgreed] = useState(false)
   const [passport, setPassport] = useState('')
   const navigate = useNavigate()
+  const { showToast } = useToast()
 
   useEffect(() => {
     api.get('/client/programs/terms/active').then(res => setTerms(res.data)).catch(console.error)
@@ -17,7 +19,7 @@ export default function ConsentSign() {
 
   const handleSign = async () => {
     if (!agreed) {
-      alert('Please agree to the terms and conditions')
+      showToast('error', 'Please agree to the terms and conditions')
       return
     }
     try {
@@ -26,16 +28,16 @@ export default function ConsentSign() {
         passport_verification: passport,
         signature_data: 'canvas-signature-placeholder'
       })
-      alert('Consent signed successfully!')
-      navigate('/client')
-    } catch (err) {
-      alert('Failed to sign consent')
+      showToast('success', 'Consent signed successfully')
+      navigate('/client/dashboard')
+    } catch (err: any) {
+      showToast('error', err.response?.data?.detail || 'Failed to sign consent')
     }
   }
 
   return (
     <div>
-      <Button variant="secondary" onClick={() => navigate('/client')} style={{ marginBottom: '1rem' }}>← Back to Dashboard</Button>
+      <Button variant="secondary" onClick={() => navigate('/client/dashboard')} style={{ marginBottom: '1rem' }}>← Back to Dashboard</Button>
       <Card title="Terms & Conditions">
         {terms ? (
           <div>

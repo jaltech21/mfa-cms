@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Login from './pages/Login'
-import Dashboard from './pages/Dashboard'
 import ClientPortal from './pages/ClientPortal'
 import AdminPortal from './pages/AdminPortal'
 import ForgotPassword from './pages/ForgotPassword'
@@ -13,9 +12,10 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/login/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/client/*" element={<ClientPortal />} />
+      <Route path="/dashboard" element={<Navigate to="/admin" replace />} />
+
       <Route path="/admin/*" element={<AdminPortal />} />
+      <Route path="/client/*" element={<ClientPortal />} />
     </Routes>
   )
 }

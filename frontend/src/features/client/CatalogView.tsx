@@ -14,7 +14,7 @@ export default function CatalogView() {
 
   return (
     <div>
-      <Button variant="secondary" onClick={() => navigate('/client')} style={{ marginBottom: '1rem' }}>← Back to Dashboard</Button>
+      <Button variant="secondary" onClick={() => navigate('/client/dashboard')} style={{ marginBottom: '1rem' }}>← Back to Dashboard</Button>
       <h1 style={{ marginBottom: '2rem' }}>Available Programs</h1>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem' }}>
         {catalog.map((item) => (

@@ -21,7 +21,7 @@ export default function MyPrograms() {
 
   return (
     <div>
-      <Button variant="secondary" onClick={() => navigate('/client')} style={{ marginBottom: '1rem' }}>← Back to Dashboard</Button>
+      <Button variant="secondary" onClick={() => navigate('/client/dashboard')} style={{ marginBottom: '1rem' }}>← Back to Dashboard</Button>
       <h1 style={{ marginBottom: '2rem' }}>My Applications</h1>
       {programs.length === 0 ? (
         <Card>

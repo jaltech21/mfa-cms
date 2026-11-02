@@ -21,6 +21,7 @@ class UserRegister(BaseModel):
     password: str
     first_name: str
     last_name: str
+    username: Optional[str] = None
     phone: Optional[str] = None
     date_of_birth: Optional[str] = None
     nationality: Optional[str] = None
@@ -31,6 +32,7 @@ class UserResponse(BaseModel):
     email: EmailStr
     first_name: str
     last_name: str
+    username: Optional[str] = None
     role: str
     is_active: bool
 

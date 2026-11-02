@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react'
 import Card from '../../components/ui/Card'
 import Button from '../../components/ui/Button'
 import api from '../../lib/api'
+import { useToast } from '../../components/ui/Toast'
 
 export default function PaymentsManager() {
   const [apps, setApps] = useState<any[]>([])
+  const { showToast } = useToast()
 
   useEffect(() => {
     loadData()
@@ -17,10 +19,10 @@ export default function PaymentsManager() {
   const initiateProgram = async (programId: number) => {
     try {
       await api.put(`/admin/payments/1/initiate/${programId}`)
-      alert('Program initiated successfully! Client can now access document tracking.')
+      showToast('success', 'Program initiated successfully! Client can now access document tracking.')
       loadData()
-    } catch (err) {
-      alert('Failed to initiate')
+    } catch (err: any) {
+      showToast('error', err.response?.data?.detail || 'Failed to initiate')
     }
   }
 

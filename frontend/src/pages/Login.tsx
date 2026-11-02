@@ -45,8 +45,10 @@ export default function Login() {
       formData.append('password', password)
       const res = await api.post('/auth/login', formData)
       localStorage.setItem('token', res.data.access_token)
-      if (res.data?.role === 'client') {
-        navigate('/client')
+      const me = await api.get('/auth/me')
+      const role = me.data?.role
+      if (role === 'client') {
+        navigate('/client/dashboard')
       } else {
         navigate('/admin')
       }

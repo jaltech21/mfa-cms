@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom'
 
-export default function Header({ title }: { title: string }) {
+export default function Header({ title, logoutPath = '/login' }: { title: string; logoutPath?: string }) {
   const navigate = useNavigate()
   
   const logout = () => {
     localStorage.removeItem('token')
-    navigate('/login')
+    navigate(logoutPath)
   }
   
   return (

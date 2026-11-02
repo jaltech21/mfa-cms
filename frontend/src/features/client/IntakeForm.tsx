@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import Card from '../../components/ui/Card'
 import Input from '../../components/ui/Input'
 import Button from '../../components/ui/Button'
+import { useToast } from '../../components/ui/Toast'
 
 export default function IntakeForm() {
   const [step, setStep] = useState(1)
   const navigate = useNavigate()
+  const { showToast } = useToast()
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -19,14 +21,14 @@ export default function IntakeForm() {
   const handleNext = () => {
     if (step < 3) setStep(step + 1)
     else {
-      alert('Application submitted successfully!')
-      navigate('/client')
+      showToast('success', 'Application submitted successfully')
+      navigate('/client/dashboard')
     }
   }
 
   return (
     <div>
-      <Button variant="secondary" onClick={() => navigate('/client')} style={{ marginBottom: '1rem' }}>← Back to Dashboard</Button>
+      <Button variant="secondary" onClick={() => navigate('/client/dashboard')} style={{ marginBottom: '1rem' }}>← Back to Dashboard</Button>
       <Card title={`Intake Form - Step ${step} of 3`}>
         {step === 1 && (
           <div>

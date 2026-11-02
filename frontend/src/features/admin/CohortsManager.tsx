@@ -4,12 +4,14 @@ import Card from '../../components/ui/Card'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
 import api from '../../lib/api'
+import { useToast } from '../../components/ui/Toast'
 
 export default function CohortsManager() {
   const [cohorts, setCohorts] = useState<any[]>([])
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({ name: '', cohort_type: 'family', description: '' })
   const navigate = useNavigate()
+  const { showToast } = useToast()
 
   useEffect(() => {
     loadCohorts()
@@ -22,11 +24,11 @@ export default function CohortsManager() {
   const handleCreate = async () => {
     try {
       await api.post('/admin/cohorts', form)
-      alert('Cohort created')
+      showToast('success', 'Cohort created successfully')
       setShowForm(false)
       loadCohorts()
-    } catch (err) {
-      alert('Failed to create')
+    } catch (err: any) {
+      showToast('error', err.response?.data?.detail || 'Failed to create cohort')
     }
   }
 

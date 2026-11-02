@@ -35,6 +35,7 @@ def register(user_in: UserRegister, db: Session = Depends(get_db)):
         password_hash=security.get_password_hash(user_in.password),
         first_name=user_in.first_name,
         last_name=user_in.last_name,
+        username=user_in.username or user_in.email,
         phone=user_in.phone,
         nationality=user_in.nationality,
         role=UserRole.CLIENT,
@@ -48,6 +49,8 @@ def register(user_in: UserRegister, db: Session = Depends(get_db)):
 @router.post("/login", response_model=Token)
 def login(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
     user = db.query(Client).filter(Client.email == form_data.username).first()
+    if not user:
+        user = db.query(Client).filter(Client.username == form_data.username).first()
     if not user or not security.verify_password(form_data.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

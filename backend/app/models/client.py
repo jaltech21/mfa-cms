@@ -15,6 +15,7 @@ class Client(BaseModel):
     __tablename__ = "clients"
     
     email = Column(String, unique=True, index=True, nullable=False)
+    username = Column(String, unique=True, nullable=True)
     password_hash = Column(String, nullable=False)
     role = Column(Enum(UserRole), default=UserRole.CLIENT, nullable=False)
     
