@@ -140,7 +140,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0F172A] text-white">
-      <header className="sticky top-0 z-50 bg-[#0F172A]/70 backdrop-blur-xl border-b border-white/10">
+      <header className="sticky top-0 z-50 bg-[#0F172A]/80 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-black/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
           <button onClick={() => scrollToSection('top')} className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#059669] to-[#10B981] flex items-center justify-center text-white font-bold text-lg">M</div>
@@ -173,7 +173,7 @@ export default function Home() {
               <Sparkles className="w-4 h-4 mr-2" />
               Enterprise Immigration &amp; Visa Processing
             </span>
-            <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
+            <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.08]">
               Streamlined Global Mobility &amp; Visa Solutions
             </h1>
             <p className="mt-6 text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
@@ -234,7 +234,7 @@ export default function Home() {
               const ServiceIcon = service.icon
               return (
                 <div key={service.id} className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-xl transition-all flex flex-col text-left">
-                  <div className="w-12 h-12 rounded-xl bg-[#059669]/10 flex items-center justify-center text-[#059669] mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#059669] to-[#10B981] text-white flex items-center justify-center shadow-lg shadow-[#059669]/25 mb-4">
                     <ServiceIcon className="w-6 h-6" />
                   </div>
                   <h3 className="text-lg font-bold text-[#0F172A]">{service.title}</h3>
@@ -320,6 +320,7 @@ export default function Home() {
       <section className="py-20 bg-[#0F172A]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="rounded-3xl bg-gradient-to-br from-[#052e16] to-[#064e3b] border border-[#059669]/30 p-8 sm:p-12 text-center">
+            <span className="inline-flex items-center rounded-full bg-[#059669]/20 px-4 py-1.5 text-sm font-semibold text-[#34D399] border border-[#059669]/40 mb-6">AI-Powered</span>
             <div className="w-14 h-14 mx-auto rounded-2xl bg-[#059669]/20 flex items-center justify-center text-[#34D399] mb-6">
               <MessageSquare className="w-7 h-7" />
             </div>
