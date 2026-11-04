@@ -333,6 +333,41 @@ export default function Home() {
         </div>
       </section>
 
+      <section id="about" className="py-20 bg-[#0F172A] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <span className="inline-flex items-center rounded-full bg-[#059669]/15 px-4 py-1.5 text-sm font-semibold text-[#34D399] border border-[#059669]/30">Who We Are</span>
+              <h2 className="mt-4 text-3xl sm:text-4xl font-bold tracking-tight">Trusted Global Mobility Partner</h2>
+              <p className="mt-4 text-slate-400 leading-relaxed">
+                Migration For All (MFA) is an enterprise immigration, visa processing, and travel support organization delivering end-to-end global mobility solutions for individuals, families, and corporations.
+              </p>
+              <p className="mt-3 text-slate-400 leading-relaxed">
+                Our casework teams combine official government liaison expertise with transparent client self-service, supported by AI-assisted WhatsApp communication via Trexo.
+              </p>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div className="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-sm">
+                <p className="text-3xl font-bold text-[#34D399]">10+</p>
+                <p className="mt-2 text-sm text-slate-400">Years of processing experience</p>
+              </div>
+              <div className="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-sm">
+                <p className="text-3xl font-bold text-[#34D399]">4</p>
+                <p className="mt-2 text-sm text-slate-400">Core visa programs</p>
+              </div>
+              <div className="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-sm">
+                <p className="text-3xl font-bold text-[#34D399]">24/7</p>
+                <p className="mt-2 text-sm text-slate-400">AI-assisted client support</p>
+              </div>
+              <div className="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-sm">
+                <p className="text-3xl font-bold text-[#34D399]">100%</p>
+                <p className="mt-2 text-sm text-slate-400">Transparent tracking</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="py-20 bg-[#F8FAFC] text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl sm:text-4xl font-bold text-[#0F172A] tracking-tight">Begin Your Global Mobility Journey</h2>
