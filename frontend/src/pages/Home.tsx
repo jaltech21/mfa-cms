@@ -15,6 +15,9 @@ import {
   Map,
   Compass,
   MessageCircle,
+  Landmark,
+  Plane,
+  Ship,
 } from 'lucide-react'
 
 const NAV_LINKS = ['Services', 'Process', 'Track Application', 'Pricing Catalog', 'About Us']
@@ -39,10 +42,28 @@ const services = [
     description: 'Employer-sponsored and skilled migration support for Australia.',
   },
   {
-    id: 'germany',
-    title: 'Germany',
+    id: 'turkey',
+    title: 'Turkey',
     icon: Globe,
-    description: 'Skilled worker and family reunification support for Germany.',
+    description: 'Skilled worker and family reunification support for Turkey.',
+  },
+  {
+    id: 'united-states',
+    title: 'United States',
+    icon: Landmark,
+    description: 'Skilled and family immigration support for the United States.',
+  },
+  {
+    id: 'new-zealand',
+    title: 'New Zealand',
+    icon: Plane,
+    description: 'Skilled and family migration support for New Zealand.',
+  },
+  {
+    id: 'france',
+    title: 'France',
+    icon: Ship,
+    description: 'Skilled worker and family reunification support for France.',
   },
 ]
 
