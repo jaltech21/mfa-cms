@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import Card from '../components/ui/Card'
 import Input from '../components/ui/Input'
 import Button from '../components/ui/Button'
@@ -16,13 +16,17 @@ export default function ClientLanding() {
   const navigate = useNavigate()
   const { showToast } = useToast()
 
-  const [mode, setMode] = useState<'login' | 'register'>('login')
+  const location = useLocation()
+  const [mode, setMode] = useState<'login' | 'register'>(() => (location.state as any)?.mode === 'register' ? 'register' : 'login')
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [phone, setPhone] = useState('')
+  const [passportNumber, setPassportNumber] = useState('')
+  const [tcAccepted, setTcAccepted] = useState(false)
   const [regError, setRegError] = useState('')
   const [regLoading, setRegLoading] = useState(false)
 
@@ -42,11 +46,14 @@ export default function ClientLanding() {
 
     if (!firstName.trim()) { setRegError('First name is required'); return }
     if (!lastName.trim()) { setRegError('Last name is required'); return }
+    if (!phone.trim()) { setRegError('Phone number is required'); return }
+    if (!passportNumber.trim()) { setRegError('Passport number is required'); return }
     if (!username.trim() || username.trim().length < 3) { setRegError('Username must be at least 3 characters'); return }
     if (!email) { setRegError('Email address is required'); return }
     if (!validateEmail(email)) { setRegError('Please enter a valid email address'); return }
     if (!password) { setRegError('Password is required'); return }
     if (password.length < 6) { setRegError('Password must be at least 6 characters'); return }
+    if (!tcAccepted) { setRegError('You must accept the Terms and Conditions to continue'); return }
 
     setRegLoading(true)
     try {
@@ -56,6 +63,7 @@ export default function ClientLanding() {
         username: username.trim(),
         email: email.trim(),
         password,
+        phone: phone.trim(),
       })
       showToast('success', 'Your account has been created successfully. Please sign in.')
       navigate('/client')
@@ -183,9 +191,17 @@ export default function ClientLanding() {
       <form onSubmit={handleRegister}>
         <Input label="First Name" placeholder="Enter your first name" value={firstName} onChange={(e) => setFirstName(e.target.value)} disabled={regLoading} style={{ ...inputStyle, marginBottom: '1rem' }} />
         <Input label="Last Name" placeholder="Enter your last name" value={lastName} onChange={(e) => setLastName(e.target.value)} disabled={regLoading} style={{ ...inputStyle, marginBottom: '1rem' }} />
+        <Input label="Phone Number" type="tel" placeholder="Enter your phone number" value={phone} onChange={(e) => setPhone(e.target.value)} disabled={regLoading} style={{ ...inputStyle, marginBottom: '1rem' }} />
+        <Input label="Passport Number" placeholder="Enter your passport number" value={passportNumber} onChange={(e) => setPassportNumber(e.target.value)} disabled={regLoading} style={{ ...inputStyle, marginBottom: '1rem' }} />
         <Input label="Username" placeholder="Choose a username" value={username} onChange={(e) => setUsername(e.target.value)} disabled={regLoading} style={{ ...inputStyle, marginBottom: '1rem' }} />
         <Input label="Email Address" type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={regLoading} style={{ ...inputStyle, marginBottom: '1rem' }} />
         <Input label="Password" type="password" placeholder="Choose a password" value={password} onChange={(e) => setPassword(e.target.value)} disabled={regLoading} style={{ ...inputStyle, marginBottom: '1.25rem' }} />
+        <div style={{ marginBottom: '1.25rem', display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+          <input id="terms" type="checkbox" checked={tcAccepted} onChange={(e) => setTcAccepted(e.target.checked)} style={{ marginTop: '3px', width: '16px', height: '16px', cursor: 'pointer' }} />
+          <label htmlFor="terms" style={{ fontSize: '0.8rem', color: '#6b7280', cursor: 'pointer', lineHeight: '1.4' }}>
+            I have read and agree to Migration For All's short Terms and Conditions for the company.
+          </label>
+        </div>
         {regError && <div style={errorBox}>{regError}</div>}
         <Button type="submit" disabled={regLoading} style={submitButtonStyle}>
           {regLoading ? 'Creating Account...' : 'Create Account'}

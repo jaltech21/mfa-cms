@@ -360,7 +360,7 @@ export default function Home() {
           <p className="text-sm font-semibold text-[#8A593D]">Whenever you’re ready</p>
           <h2 className="mt-3 font-serif text-3xl tracking-tight text-[#292D27] sm:text-4xl">Let’s take the first step.</h2>
           <p className="mx-auto mt-4 max-w-2xl text-[#62665E]">Create an account to start your application and keep your details together.</p>
-          <button onClick={() => navigate('/client')} className="mt-7 inline-flex items-center gap-2 rounded-md bg-[#36594A] px-7 py-3.5 font-semibold text-white transition-colors hover:bg-[#294638]">
+          <button onClick={() => navigate('/client', { state: { mode: 'register' } })} className="mt-7 inline-flex items-center gap-2 rounded-md bg-[#36594A] px-7 py-3.5 font-semibold text-white transition-colors hover:bg-[#294638]">
             Get started online <ArrowRight className="h-5 w-5" />
           </button>
           <div className="mt-6 flex flex-col items-center justify-center gap-4 sm:flex-row">
