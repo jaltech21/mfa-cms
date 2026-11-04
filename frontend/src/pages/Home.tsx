@@ -197,7 +197,7 @@ export default function Home() {
               Reuniting with family, travelling for treatment or planning a move for work? We’ll help you understand the paperwork and take the next step at your own pace.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <button onClick={() => navigate('/client')} className="inline-flex items-center justify-center gap-2 rounded-md bg-[#36594A] px-6 py-3.5 font-semibold text-white transition-colors hover:bg-[#294638]">
+              <button onClick={() => navigate('/client', { state: { mode: 'register' } })} className="inline-flex items-center justify-center gap-2 rounded-md bg-[#36594A] px-6 py-3.5 font-semibold text-white transition-colors hover:bg-[#294638]">
                 Get started <ArrowRight className="h-4 w-4" />
               </button>
               <button onClick={() => scrollToSection('process')} className="inline-flex items-center justify-center rounded-md border border-[#292D27]/20 bg-transparent px-6 py-3.5 font-semibold text-[#292D27] transition-colors hover:bg-white/60">
