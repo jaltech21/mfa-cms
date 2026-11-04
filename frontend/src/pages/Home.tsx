@@ -233,7 +233,7 @@ export default function Home() {
             {services.map((service) => {
               const ServiceIcon = service.icon
               return (
-                <div key={service.id} className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-xl transition-all flex flex-col">
+                <div key={service.id} className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-xl transition-all flex flex-col text-left">
                   <div className="w-12 h-12 rounded-xl bg-[#059669]/10 flex items-center justify-center text-[#059669] mb-4">
                     <ServiceIcon className="w-6 h-6" />
                   </div>
@@ -261,7 +261,8 @@ export default function Home() {
       <section id="process" className="py-20 bg-[#0F172A] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">How It Works</h2>
+            <span className="inline-flex items-center rounded-full bg-[#059669]/15 px-4 py-1.5 text-sm font-semibold text-[#34D399] border border-[#059669]/30">How It Works</span>
+            <h2 className="mt-6 text-3xl sm:text-4xl font-bold tracking-tight">How It Works</h2>
             <p className="mt-4 text-slate-400">A transparent, four-step journey from submission to settlement.</p>
           </div>
           <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
